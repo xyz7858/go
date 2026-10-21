@@ -1,0 +1,52 @@
+def is_safe(board, row, col):
+    n = len(board)
+
+    for i in range(col):
+        if board[row][i] == 1:
+            return False
+
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+
+    for i, j in zip(range(row, n, 1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+
+    return True
+
+
+def print_solution(board):
+    for row in board:
+        print(" ".join("Q" if x == 1 else "." for x in row))
+    print()
+
+
+def solve_n_queens(n):
+    board = [[0 for _ in range(n)] for _ in range(n)]
+
+    def backtrack(col):
+        if col == n:
+            print_solution(board)
+            return True
+
+        for row in range(n):
+            if is_safe(board, row, col):
+                board[row][col] = 1
+
+                if backtrack(col + 1):
+                    return True
+
+                board[row][col] = 0
+
+        return False
+
+    if not backtrack(0):
+        print("No solution exists for N =", n)
+        return False
+
+    return True
+
+
+n = int(input("Enter N for the N-Queens problem: "))
+solve_n_queens(n)
