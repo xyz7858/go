@@ -1,0 +1,75 @@
+from collections import deque
+
+def print_state(state, step):
+    print(f"\nStep {step}")
+    print("A:", list(state[0]))
+    print("B:", list(state[1]))
+    print("C:", list(state[2]))
+
+
+def get_next_states(state):
+    next_states = []
+    pegs = [list(state[0]), list(state[1]), list(state[2])]
+
+    for i in range(3):
+        if pegs[i]:
+            disk = pegs[i][-1]
+
+            for j in range(3):
+                if i != j:
+                    if not pegs[j] or pegs[j][-1] > disk:
+                        new_pegs = [peg[:] for peg in pegs]
+
+                        new_pegs[i].pop()
+                        new_pegs[j].append(disk)
+
+                        next_state = (
+                            tuple(new_pegs[0]),
+                            tuple(new_pegs[1]),
+                            tuple(new_pegs[2])
+                        )
+
+                        next_states.append(next_state)
+
+    return next_states
+
+
+def bfs_tower_of_hanoi(n):
+    initial_state = (tuple(range(n, 0, -1)), (), ())
+    goal_state = ((), (), tuple(range(n, 0, -1)))
+
+    queue = deque([initial_state])
+    visited = {initial_state}
+    parent = {initial_state: None}
+
+    while queue:
+        current = queue.popleft()
+
+        if current == goal_state:
+            path = []
+
+            while current is not None:
+                path.append(current)
+                current = parent[current]
+
+            path.reverse()
+
+            print("\nSolution Steps:")
+
+            for i, state in enumerate(path):
+                print_state(state, i)
+
+            print("\nTotal Moves =", len(path) - 1)
+            return
+
+        for next_state in get_next_states(current):
+            if next_state not in visited:
+                visited.add(next_state)
+                parent[next_state] = current
+                queue.append(next_state)
+
+    print("No solution found.")
+
+
+n = int(input("Enter number of disks: "))
+bfs_tower_of_hanoi(n)
