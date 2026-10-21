@@ -1,0 +1,26 @@
+def reflex_agent(location, room_status):
+    if room_status[location] == "dirty":
+        print("room is dirty")
+        print("action:suck")
+        room_status[location] = "clean"
+    else:
+        if location == "A":
+            print("room is clean")
+            print("move to the right")
+            location = "B"
+        else:
+            print("room is clean")
+            print("move to the left")
+            location = "A"
+    return location, room_status
+
+room_status = {"A": "dirty", "B": "dirty"}
+location = "A"
+print("initial Room:", room_status)
+
+while True:
+    location, room_status = reflex_agent(location, room_status)
+    if room_status["A"] == "clean" and room_status["B"] == "clean":
+        print("both rooms are clean.")
+        print("action:no operation")
+        break
